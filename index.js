@@ -6,6 +6,7 @@ const command = Command(dispatch)
         name,
         location,
         zone,
+		dropping,
         currHp,
         maxHp;
 
@@ -41,7 +42,8 @@ const command = Command(dispatch)
     dispatch.hook('S_SPAWN_ME', 1, (event) => {});
 
     dispatch.hook('C_PLAYER_LOCATION', 1, (event) => {
-        location = event;
+        if(!dropping)location = event;
+		if(dropping)return false
     });
 
     command.add('drop', amount => {
@@ -57,10 +59,11 @@ const command = Command(dispatch)
                     else {
                         fallDistance = 400 + (amountToDrop * 20);
                     }
+					dropping = true
                     dispatch.toServer('C_PLAYER_LOCATION', 1,{
 						x1: location.x1,
 						y1: location.y1,
-						z1: (location.z1 - fallDistance),
+						z1: (location.z1 + fallDistance),
 						w: location.w,
 						x2: location.x1,
 						y2: location.y1,
@@ -70,6 +73,7 @@ const command = Command(dispatch)
 						unk: 0,
 						time: 0
 					})
+					dropping = false
                 }
             }
     });
