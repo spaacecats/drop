@@ -6,7 +6,6 @@ const command = Command(dispatch)
         name,
         location,
         zone,
-	dropping,
         currHp,
         maxHp;
 
