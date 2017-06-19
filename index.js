@@ -73,7 +73,9 @@ const command = Command(dispatch)
 						unk: 0,
 						time: 0
 					})
+					setTimeout(function(){
 					dropping = false
+					},500)
                 }
             }
     });
