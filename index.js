@@ -5,6 +5,8 @@ module.exports = function Drop(dispatch) {
         name,
         location,
         zone,
+		fall,
+		dropping,
         currHp,
         maxHp;
 
@@ -24,7 +26,12 @@ module.exports = function Drop(dispatch) {
     dispatch.hook('S_LOAD_TOPO', 1, (event) => {
         zone = event.zone;
     });
-
+			
+	dispatch.hook('S_PLAYER_STAT_UPDATE', 4, event =>{
+			currHp = event.currHp
+			maxHp = event.maxHp
+	})
+	
     dispatch.hook('S_CREATURE_CHANGE_HP', 2, (event) => {
         if (event.target.toString() == cid.toString()) {
             currHp = event.curHp;
@@ -35,7 +42,8 @@ module.exports = function Drop(dispatch) {
     dispatch.hook('S_SPAWN_ME', 1, (event) => {});
 
     dispatch.hook('C_PLAYER_LOCATION', 1, (event) => {
-        location = event;
+        if(!dropping)location = event;
+		if(dropping)return false
     });
 
     dispatch.hook('C_CHAT', 1, (event) => {
@@ -53,20 +61,21 @@ module.exports = function Drop(dispatch) {
                     else {
                         fallDistance = 400 + (amountToDrop * 20);
                     }
-
-                    location.z1 += fallDistance;
-
-                    dispatch.toServer('C_PLAYER_LOCATION', 1, location);
-
-                    dispatch.toClient('S_SPAWN_ME', 1, {
-                        target: cid,
-                        x: location.x1,
-                        y: location.y1,
-                        z: location.z1,
-                        alive: 1,
-                        unk: 0
-                    });
-
+					dropping = true
+                    dispatch.toServer('C_PLAYER_LOCATION', 1,{
+						x1: location.x1,
+						y1: location.y1,
+						z1: (location.z1 + fallDistance),
+						w: location.w,
+						x2: location.x1,
+						y2: location.y1,
+						z2: location.z1,
+						type: 2,
+						speed: 0,
+						unk: 0,
+						time: 0
+					})
+					dropping = false
                 }
             }
 
