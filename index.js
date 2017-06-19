@@ -1,3 +1,4 @@
+const Command = require('command')
 module.exports = function Drop(dispatch) {
 const command = Command(dispatch)
     let cid,
