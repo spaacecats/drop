@@ -1,5 +1,5 @@
 module.exports = function Drop(dispatch) {
-
+const command = Command(dispatch)
     let cid,
         model,
         name,
@@ -45,10 +45,8 @@ module.exports = function Drop(dispatch) {
 		if(dropping)return false
     });
 
-    dispatch.hook('C_CHAT', 1, (event) => {
-        if (event.message.includes('!drop')) {
-
-            let amount = parseInt(event.message.replace(/<\/?[^<>]*>/gi, '').split(' ')[1]) || null;
+    command.add('drop', amount => {
+	amount = Number(amount)
 
             if (amount && currHp && maxHp) {
                 let amountToDrop = (currHp * 100 / maxHp) - amount;
@@ -77,8 +75,5 @@ module.exports = function Drop(dispatch) {
 					dropping = false
                 }
             }
-
-            return false;
-        }
     });
 };
