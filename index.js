@@ -5,8 +5,7 @@ module.exports = function Drop(dispatch) {
         name,
         location,
         zone,
-		fall,
-		dropping,
+	dropping,
         currHp,
         maxHp;
 
